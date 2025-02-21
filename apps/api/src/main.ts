@@ -6,6 +6,7 @@ import { Jwt } from './auth/services/jwt.service';
 import { RolesGuard } from './auth/roles.guard';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { API_VERSION } from './app.service';
+import { ErrorsFilter } from './core/filters/errors.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ResponsesInterceptor());
+  app.useGlobalFilters(new ErrorsFilter());
   app.setGlobalPrefix('api');
   const reflector = app.get(Reflector);
   const jwt = app.get(Jwt);
