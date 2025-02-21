@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 declare const prisma: import("@prisma/client/runtime/library").DynamicClientExtensionThis<Prisma.TypeMap<import("@prisma/client/runtime/library").InternalArgs & {
     result: {};
     model: {
@@ -61,4 +61,5 @@ declare const prisma: import("@prisma/client/runtime/library").DynamicClientExte
     client: {};
 }>;
 export default prisma;
+export type { PrismaClient };
 //# sourceMappingURL=index.d.ts.map

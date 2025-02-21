@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CustomException } from "@/core/exceptions/custom.exception";
-import prisma from "@repo/database";
+import { PrismaClient } from "@repo/database";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { PRISMA_PROVIDER, SUPABASE_PROVIDER } from "@/core/modules/core.module";
 
 enum LoginError {
   EMAIL_NOT_CONFIRMED = "email_not_confirmed",
@@ -12,7 +13,8 @@ enum LoginError {
 export class AuthService {
 
   constructor(
-    @Inject("SUPABASE_CLIENT") private supabase: SupabaseClient,
+    @Inject(SUPABASE_PROVIDER) private supabase: SupabaseClient,
+    @Inject(PRISMA_PROVIDER) private prisma: PrismaClient,
   ) {}
 
   async login(
@@ -52,7 +54,7 @@ export class AuthService {
     name: string,
     password: string,
   ) {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         email: email,
       },
@@ -73,7 +75,7 @@ export class AuthService {
         statusCode: 400,
       });
     }
-    await prisma.user.create({
+    await this.prisma.user.create({
       data: {
         email: email,
         name: name,
