@@ -32,8 +32,6 @@ export class RolesGuard implements CanActivate {
       },
     });
 
-    console.log(user);
-
     const isValid = validRoles.some((r) => r === user?.role as Role);
 
     if (!user || !isValid) {

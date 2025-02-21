@@ -1,7 +1,7 @@
-import { ArgumentsHost, BadRequestException, Catch, HttpStatus } from "@nestjs/common";
+import { ArgumentsHost, BadRequestException, Catch, HttpException, HttpStatus } from "@nestjs/common";
 
 import { ExceptionFilter } from "@nestjs/common";
-import { CustomException } from "../exceptions/custom.exception";
+import { CustomException, GENERIC_EXCEPTION_TYPE } from "../exceptions/custom.exception";
 
 interface CustomErrorResponse {
   type: string;
@@ -37,16 +37,26 @@ export class ErrorsFilter implements ExceptionFilter {
         type: 'BAD_REQUEST_ERROR',
       } as CustomErrorResponse;
     } else if (error instanceof CustomException) {
-      const response = <string>error.getResponse();
+      const errorMessage = error.message;
       const status = error.getStatus();
 
       errorResponse = {
         statusCode: status,
-        message: response ?? genericError,
+        message: errorMessage ?? genericError,
         timestamp: new Date().getTime(),
         type: error.type,
       } as CustomErrorResponse;
-    } else {
+    } else if (error instanceof HttpException) {
+      const errorMessage = error.message;
+      const status = error.getStatus();
+
+      errorResponse = {
+        statusCode: status,
+        message: errorMessage ?? genericError,
+        timestamp: new Date().getTime(),
+      } as CustomErrorResponse;
+    }
+    else {
       errorResponse = {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: genericError,

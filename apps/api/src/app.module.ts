@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/modules/core.module';
 import { ExploreModule } from './explore/explore.module';
 import { ListsModule } from './lists/lists.module';
+import { SessionsModule } from './sessions/sessions.module';
 
 
 @Module({
@@ -15,6 +16,7 @@ import { ListsModule } from './lists/lists.module';
     AuthModule,
     ExploreModule,
     ListsModule,
+    SessionsModule,
   ],
   controllers: [AppController],
   providers: [
