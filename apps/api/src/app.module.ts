@@ -7,6 +7,7 @@ import { CoreModule } from './core/modules/core.module';
 import { ExploreModule } from './explore/explore.module';
 import { ListsModule } from './lists/lists.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { UserModule } from './user/user.module';
 
 
 @Module({
@@ -17,6 +18,7 @@ import { SessionsModule } from './sessions/sessions.module';
     ExploreModule,
     ListsModule,
     SessionsModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [
