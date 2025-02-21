@@ -13,4 +13,5 @@ const prisma = new PrismaClient().$extends({
     },
 });
 export default prisma;
+export * from "./types";
 //# sourceMappingURL=index.js.map

@@ -14,20 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient().$extends({
-    name: "findManyAndCount",
-    model: {
-        $allModels: {
-            findManyAndCount(args) {
-                return prisma.$transaction([
-                    this.findMany(args),
-                    this.count({ where: args.where }),
-                ]);
-            },
-        },
-    },
-});
-exports.default = prisma;
-__exportStar(require("./types"), exports);
+__exportStar(require("./list"), exports);
+__exportStar(require("./result"), exports);
+__exportStar(require("./unit"), exports);
 //# sourceMappingURL=index.js.map

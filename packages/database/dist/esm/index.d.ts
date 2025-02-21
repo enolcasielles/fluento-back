@@ -5,10 +5,7 @@ declare const prisma: import("@prisma/client/runtime/library").DynamicClientExte
         $allModels: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
-        user: {
-            findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
-        };
-        category: {
+        result: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
         list: {
@@ -17,10 +14,13 @@ declare const prisma: import("@prisma/client/runtime/library").DynamicClientExte
         unit: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
-        session: {
+        user: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
-        result: {
+        category: {
+            findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
+        };
+        session: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
         subscription: {
@@ -35,10 +35,7 @@ declare const prisma: import("@prisma/client/runtime/library").DynamicClientExte
         $allModels: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
-        user: {
-            findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
-        };
-        category: {
+        result: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
         list: {
@@ -47,10 +44,13 @@ declare const prisma: import("@prisma/client/runtime/library").DynamicClientExte
         unit: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
-        session: {
+        user: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
-        result: {
+        category: {
+            findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
+        };
+        session: {
             findManyAndCount: () => <Model, Args>(this: Model, args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>) => Promise<[Prisma.Result<Model, Args, "findMany">, number]>;
         };
         subscription: {
@@ -62,4 +62,5 @@ declare const prisma: import("@prisma/client/runtime/library").DynamicClientExte
 }>;
 export default prisma;
 export type { PrismaClient };
+export * from "./types";
 //# sourceMappingURL=index.d.ts.map
