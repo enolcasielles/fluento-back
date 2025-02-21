@@ -1,0 +1,142 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  sub       String   @unique
+  role      Role     @default(USER)
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  lists        List[]    // Listas creadas por el usuario
+  savedLists   List[]    @relation("UserSavedLists") // Listas guardadas
+  sessions     Session[]
+  results      Result[]
+  subscriptions Subscription[]
+  // Índices
+  @@index([sub])
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  lists     List[]
+}
+
+model List {
+  id               String         @id @default(uuid())
+  name             String
+  description      String?
+  imageUrl         String?
+  difficulty       Difficulty
+  topic            String?
+  grammarStructures String?
+  totalUnits       Int           @default(0)
+  creationStatus   CreationStatus @default(IN_PROGRESS)
+  isPublic         Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  // Relaciones
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  creator     User?     @relation(fields: [creatorId], references: [id])
+  creatorId   String?
+  savedBy     User[]    @relation("UserSavedLists")
+  units       Unit[]
+  sessions    Session[]
+}
+
+model Unit {
+  id           String   @id @default(uuid())
+  questionText String
+  questionAudio String?
+  answerText   String
+  answerAudio  String?
+  responseTime Int      // en milisegundos
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relaciones
+  list      List     @relation(fields: [listId], references: [id])
+  listId    String
+  results   Result[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  list      List     @relation(fields: [listId], references: [id])
+  listId    String
+  results   Result[]
+}
+
+model Result {
+  id        String   @id @default(uuid())
+  score     Int      // 1-3
+  answer    String
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId String
+  unit      Unit     @relation(fields: [unitId], references: [id])
+  unitId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Subscription {
+  id                   String   @id @default(uuid())
+  status              String
+  currentPeriodEnd    DateTime
+  cancelAtPeriodEnd   Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relaciones
+  user      User     @relation(fields: [userId], references: [id])
+  userId               String
+
+  @@index([userId])
+}
+
+enum Difficulty {
+  ANY
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CreationStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+} 
+
+enum Role {
+  USER
+  ADMIN
+}

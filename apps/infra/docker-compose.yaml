@@ -1,0 +1,19 @@
+version: '3.3'
+
+volumes:
+  postgres_data:
+
+services:
+  postgres:
+    container_name: fluento-postgres
+    image: postgres:16.3-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fluento-local
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./postgres_config:/docker-entrypoint-initdb.d 
