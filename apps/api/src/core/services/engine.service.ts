@@ -1,11 +1,10 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { Difficulty } from '../enums/difficulty.enum';
+import { Difficulty } from '@repo/core';
 import { CustomException } from '../exceptions/custom.exception';
 import { PrismaClient, Result, Unit } from '@repo/database';
 import { OPENAI_PROVIDER, PRISMA_PROVIDER } from '../modules/core.module';
 import { OpenAI } from 'openai';
 import { UnsplashService } from './unsplash.service';
-import { SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class EngineService implements OnModuleInit {

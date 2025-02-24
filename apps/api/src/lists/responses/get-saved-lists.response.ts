@@ -1,4 +1,4 @@
-import { Difficulty } from '@/core/enums/difficulty.enum';
+import { Difficulty } from '@repo/core';
 
 export class SavedListResponse {
   id: string;

@@ -2,7 +2,7 @@ import { Body, Controller, Param, Post, UploadedFile, UseInterceptors } from '@n
 import { ApiTags } from '@nestjs/swagger';
 import { SessionsService } from '../services/sessions.service';
 import { Roles } from '@/auth/roles.decorator';
-import { Role } from '@/core/enums/roles.enum';
+import { Role } from '@repo/core';
 import { UserId } from '@/core/decorators/user-id.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SubmitResultRequest } from '../requests/submit-result.request';

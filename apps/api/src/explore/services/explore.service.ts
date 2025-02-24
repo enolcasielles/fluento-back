@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { PrismaClient } from '@repo/database';
 import { GetExploreResponse } from '../responses/get-explore.response';
-import { Difficulty } from '@/core/enums/difficulty.enum';
+import { Difficulty } from '@repo/core';
 import { PRISMA_PROVIDER } from '@/core/modules/core.module';
 
 @Injectable()

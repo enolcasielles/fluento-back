@@ -1,4 +1,4 @@
-import { Role } from '@/core/enums/roles.enum';
+import { Role } from '@repo/core';
 import { SetMetadata } from '@nestjs/common';
 
 export const ROLE_KEY = 'role';

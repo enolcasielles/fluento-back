@@ -1,0 +1,32 @@
+{
+  "name": "@repo/core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "dev": "nodemon --config ../../configs/library/nodemon.json",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "5.10.2",
+    "@supabase/supabase-js": "^2.48.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.10.7",
+    "jsonwebtoken": "^9.0.2",
+    "openai": "^4.85.3",
+    "ts-node": "^10.9.2",
+    "unsplash-js": "^7.0.19",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.10.2",
+    "rimraf": "^5.0.7"
+  }
+}

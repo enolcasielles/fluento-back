@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ListsService } from '../services/lists.service';
 import { RolesGuard } from '@/auth/roles.guard';
 import { Roles } from '@/auth/roles.decorator';
-import { Role } from '@/core/enums/roles.enum';
+import { Role } from '@repo/core';
 import { CreateListRequest } from '../requests/create-list.request';
 import { GetListDetailResponse } from '../responses/get-list-detail.response';
 import { GetListSessionResponse } from '../responses/get-list-session.response';

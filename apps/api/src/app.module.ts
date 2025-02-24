@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -9,6 +9,7 @@ import { ListsModule } from './lists/lists.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { UserModule } from './user/user.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { initKafka } from '@repo/kafka';
 
 
 @Module({
@@ -27,4 +28,8 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  async onModuleInit() {
+    await initKafka();
+  }
+}

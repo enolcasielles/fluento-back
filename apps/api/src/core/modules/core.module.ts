@@ -1,6 +1,5 @@
 import { Global, Module } from "@nestjs/common";
-import { getSupabaseClient } from "../lib/supabase";
-import { getOpenAI } from "../lib/openai";
+import { openai, supabase } from "@repo/core";
 import prisma from "@repo/database";
 import { EngineService } from "../services/engine.service";
 import { UnsplashService } from "../services/unsplash.service";
@@ -15,9 +14,7 @@ export const OPENAI_PROVIDER = "OPENAI_PROVIDER";
     {
       provide: OPENAI_PROVIDER,
       useFactory: () => {
-        const client = getOpenAI();
-        if (!client) throw new Error('OpenAI client not initialized');
-        return client;
+        return openai;
       }
     },
     {
@@ -26,7 +23,7 @@ export const OPENAI_PROVIDER = "OPENAI_PROVIDER";
     },
     {
       provide: SUPABASE_PROVIDER,
-      useFactory: () => getSupabaseClient()
+      useValue: supabase
     },
     UnsplashService,
     {

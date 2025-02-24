@@ -8,17 +8,16 @@ import { GetListSessionResponse } from '../responses/get-list-session.response';
 import { GetMyListsResponse } from '../responses/get-my-lists.response';
 import { GetSavedListsResponse } from '../responses/get-saved-lists.response';
 import { CustomException } from '@/core/exceptions/custom.exception';
-import { Difficulty, DifficultyLabels } from '@/core/enums/difficulty.enum';
-import { CreationStatus, CreationStatusLabels } from '@/core/enums/creation-status.enum';
-import { ProcessListService } from './process-list.service';
+import { Difficulty, DifficultyLabels, CreationStatus, CreationStatusLabels } from '@repo/core';
 import { EngineService } from '@/core/services/engine.service';
+import { produceMessage } from '@repo/kafka';
+import { CreateListMessage, Topics } from '@repo/core';
 
 
 @Injectable()
 export class ListsService {
   constructor(
     @Inject(PRISMA_PROVIDER) private prisma: PrismaClient,
-    private processListService: ProcessListService,
     private engineService: EngineService,
   ) {}
 
@@ -52,18 +51,23 @@ export class ListsService {
       },
     });
 
-    //TODO: Migrar a un job
-    const updatedList = await this.processListService.processList(list.id, userId);
+    await produceMessage<CreateListMessage>({
+      topic: Topics.CREATE_LIST,
+      message: {
+        listId: list.id,
+        userId,
+      }
+    })
 
     return {
-      id: updatedList.id,
-      name: updatedList.name,
-      topic: updatedList.topic,
-      grammarStructures: updatedList.grammarStructures,
-      difficulty: updatedList.difficulty as Difficulty,
-      difficultyLabel: DifficultyLabels[updatedList.difficulty],
-      creationStatus: updatedList.creationStatus as CreationStatus,
-      creationStatusLabel: CreationStatusLabels[updatedList.creationStatus],
+      id: list.id,
+      name: list.name,
+      topic: list.topic,
+      grammarStructures: list.grammarStructures,
+      difficulty: list.difficulty as Difficulty,
+      difficultyLabel: DifficultyLabels[list.difficulty],
+      creationStatus: list.creationStatus as CreationStatus,
+      creationStatusLabel: CreationStatusLabels[list.creationStatus],
     };
   }
 

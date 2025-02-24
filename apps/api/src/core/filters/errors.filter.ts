@@ -17,6 +17,8 @@ export class ErrorsFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse();
     let errorResponse: CustomErrorResponse;
 
+    console.log(error);
+
     if (error instanceof BadRequestException) {
       const response = <any>error.getResponse();
       const status = error.getStatus();

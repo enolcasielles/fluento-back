@@ -1,5 +1,6 @@
-import { CreationStatus } from '@/core/enums/creation-status.enum';
-import { Difficulty } from '@/core/enums/difficulty.enum';
+import { CreationStatus } from '@repo/core';
+import { Difficulty } from "@repo/core";
+
 
 export class UserProgressResponse {
   practicedUnits: number;

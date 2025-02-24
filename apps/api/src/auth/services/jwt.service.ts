@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Role } from '@/core/enums/roles.enum';
+import { Role } from '@repo/core';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 

@@ -1,5 +1,4 @@
-import { CreationStatus } from '@/core/enums/creation-status.enum';
-import { Difficulty } from '@/core/enums/difficulty.enum';
+import { CreationStatus, Difficulty } from '@repo/core';
 
 export class CreateListResponse {
   id: string;

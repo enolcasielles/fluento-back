@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Jwt } from './services/jwt.service';
-import { Role } from '@/core/enums/roles.enum';
+import { Role } from '@repo/core';
 import { ROLE_KEY } from './roles.decorator';
 import { UnauthorizedException } from '@/core/exceptions/unauthorized.exception';
 import prisma from '@repo/database';

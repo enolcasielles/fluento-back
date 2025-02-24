@@ -1,21 +1,16 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { List, PrismaClient } from '@repo/database';
-import { PRISMA_PROVIDER } from '@/core/modules/core.module';
-import { CustomException } from '@/core/exceptions/custom.exception';
-import { CreationStatus } from '@/core/enums/creation-status.enum';
-import { Difficulty } from '@/core/enums/difficulty.enum';
-import { EngineService } from '@/core/services/engine.service';
+import { KafkaConsumer } from "@repo/kafka";
+import { calculateResponseTime, CreateListMessage, CreationStatus, Difficulty, generateListImage, listGenerator, Topics } from "@repo/core";
+import prisma from "@repo/database";
 
-@Injectable()
-export class ProcessListService {
-  constructor(
-    @Inject(PRISMA_PROVIDER) private prisma: PrismaClient,
-    private engineService: EngineService,
-  ) {}
+export class CreateListConsumer extends KafkaConsumer<CreateListMessage> {
+  topic = Topics.CREATE_LIST;
+  groupId = 'createListConsumer';
 
-  async processList(listId: string, userId: string): Promise<List> {
+  async onMessage(message: CreateListMessage): Promise<boolean> {
     try {
-      const list = await this.prisma.list.findUnique({
+      console.log('Processing message', message);
+      const { listId, userId } = message;
+      const list = await prisma.list.findUnique({
         where: { id: listId, creatorId: userId },
         include: {
           units: true,
@@ -23,18 +18,18 @@ export class ProcessListService {
       });
 
       if (!list) {
-        throw new CustomException({
-          message: 'Lista no encontrada',
-        });
+        return true;
       }
 
       if (list.units.length > 0) {
-        throw new CustomException({
-          message: 'La lista ya tiene unidades',
-        });
+        return true;
       }
 
-      await this.prisma.list.update({
+      if (list.creationStatus !== CreationStatus.PENDING) {
+        return true;
+      }
+
+      await prisma.list.update({
         where: { id: listId },
         data: {
           creationStatus: CreationStatus.IN_PROGRESS,
@@ -43,10 +38,10 @@ export class ProcessListService {
 
       if (!list.imageUrl) {
         try {
-          const imageUrl = await this.engineService.generateListImage({
+          const imageUrl = await generateListImage({
             topic: list.topic,
           });
-          await this.prisma.list.update({
+          await prisma.list.update({
             where: { id: listId },
             data: {
               imageUrl,
@@ -56,7 +51,7 @@ export class ProcessListService {
       }
 
       try {
-        const { units, description } = await this.engineService.generateList({
+        const { units, description } = await listGenerator({
           difficulty: list.difficulty as Difficulty,
           topic: list.topic,
           grammarStructures: list.grammarStructures,
@@ -79,18 +74,18 @@ export class ProcessListService {
           });
         }
 
-        await this.prisma.unit.createMany({
+        await prisma.unit.createMany({
           data: unitsToCreate.map((unit) => ({
             ...unit,
             listId,
-            responseTime: this.engineService.calculateResponseTime({
+            responseTime: calculateResponseTime({
               answerText: unit.answerText,
               difficulty: list.difficulty as Difficulty,
             }),
           })),
         });
 
-        const updatedList = await this.prisma.list.update({
+        await prisma.list.update({
           where: { id: listId },
           data: {
             creationStatus: CreationStatus.COMPLETED,
@@ -98,27 +93,17 @@ export class ProcessListService {
             totalUnits: unitsToCreate.length,
           },
         });
-
-        return updatedList;
       } catch (error) {
-        await this.prisma.list.update({
+        await prisma.list.update({
           where: { id: listId },
           data: {
             creationStatus: CreationStatus.FAILED,
           },
         });
-        throw new CustomException({
-          message:
-            'Se ha producido un error al ejecutar los LLMs para generar las unidades',
-        });
       }
     } catch (error) {
-      if (error instanceof CustomException) {
-        throw error;
-      }
-      throw new CustomException({
-        message: 'Error al generar las unidades',
-      });
+      // TODO: Insertar a una cola de errores.
     }
+    return true;
   }
 }

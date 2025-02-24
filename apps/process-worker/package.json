@@ -1,0 +1,21 @@
+{
+  "name": "@repo/process-worker",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "dev": "tsx watch src/index.ts",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs"
+  },
+  "dependencies": {
+    "@repo/core": "workspace:^",
+    "@repo/database": "workspace:^",
+    "@repo/kafka": "workspace:^",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.7.0"
+  }
+}

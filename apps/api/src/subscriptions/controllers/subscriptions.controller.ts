@@ -2,7 +2,7 @@ import { Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SubscriptionsService } from '../services/subscriptions.service';
 import { Roles } from '@/auth/roles.decorator';
-import { Role } from '@/core/enums/roles.enum';
+import { Role } from '@repo/core';
 import { UserId } from '@/core/decorators/user-id.decorator';
 import { GetSubscriptionStatusResponse } from '../responses/get-subscription-status.response';
 import { BasicResponse } from '@/core/responses/basic.response';
