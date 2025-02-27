@@ -4,3 +4,4 @@ export * from './evaluate-answer';
 export * from './generate-list-image';
 export * from './list-generator';
 export * from './text-to-audio';
+export * from './generate-next-unit';

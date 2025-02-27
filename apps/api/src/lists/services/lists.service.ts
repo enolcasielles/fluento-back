@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { PrismaClient } from '@repo/database';
-import { PRISMA_PROVIDER } from '@/core/modules/core.module';
+import { ENGINE_PROVIDER, PRISMA_PROVIDER } from '@/core/modules/core.module';
 import { CreateListRequest } from '../requests/create-list.request';
 import { CreateListResponse } from '../responses/create-list.response';
 import { GetListDetailResponse } from '../responses/get-list-detail.response';
@@ -9,16 +9,16 @@ import { GetMyListsResponse } from '../responses/get-my-lists.response';
 import { GetSavedListsResponse } from '../responses/get-saved-lists.response';
 import { CustomException } from '@/core/exceptions/custom.exception';
 import { Difficulty, DifficultyLabels, CreationStatus, CreationStatusLabels } from '@repo/core';
-import { EngineService } from '@/core/services/engine.service';
 import { produceMessage } from '@repo/kafka';
 import { CreateListMessage, Topics } from '@repo/core';
+import { IEngineDI } from '@/core/di/engine.di';
 
 
 @Injectable()
 export class ListsService {
   constructor(
     @Inject(PRISMA_PROVIDER) private prisma: PrismaClient,
-    private engineService: EngineService,
+    @Inject(ENGINE_PROVIDER) private engineService: IEngineDI,
   ) {}
 
   async createList(userId: string, request: CreateListRequest): Promise<CreateListResponse> {
@@ -245,7 +245,28 @@ export class ListsService {
       });
     }
 
-    const nextUnit = await this.engineService.generateNextUnit(session.id);
+    const sessionWithUnits = await this.prisma.session.findUnique({
+      where: { id: session.id },
+      include: {
+        list: {
+          include: {
+            units: {
+              include: {
+                results: {
+                  orderBy: {
+                    createdAt: 'desc',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const nextUnit = await this.engineService.generateNextUnit({
+      units: sessionWithUnits.list.units
+    });
 
     return {
       sessionId: session.id,

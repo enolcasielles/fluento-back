@@ -1,18 +1,18 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { PrismaClient } from '@repo/database';
-import { PRISMA_PROVIDER } from '@/core/modules/core.module';
+import { ENGINE_PROVIDER, PRISMA_PROVIDER } from '@/core/modules/core.module';
 import { CustomException } from '@/core/exceptions/custom.exception';
-import { EngineService } from '@/core/services/engine.service';
 import { SubmitResultRequest } from '../requests/submit-result.request';
 import { SubmitResultResponse } from '../responses/submit-result.response';
 import { EvaluateAnswerResponse } from '../responses/evaluate-answer.response';
 import { NO_ANSWER } from '@/core/constants/constants';
+import { IEngineDI } from '@/core/di/engine.di';
 
 @Injectable()
 export class SessionsService {
   constructor(
     @Inject(PRISMA_PROVIDER) private prisma: PrismaClient,
-    private engineService: EngineService,
+    @Inject(ENGINE_PROVIDER) private engineService: IEngineDI,
   ) {}
 
   async evaluateAnswer(
@@ -117,7 +117,28 @@ export class SessionsService {
       },
     });
 
-    const nextUnit = await this.engineService.generateNextUnit(sessionId);
+
+    const sessionWithUnits = await this.prisma.session.findUnique({
+      where: { id: session.id },
+      include: {
+        list: {
+          include: {
+            units: {
+              include: {
+                results: {
+                  orderBy: {
+                    createdAt: 'desc',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const nextUnit = await this.engineService.generateNextUnit({
+      units: sessionWithUnits.list.units,
+    });
 
     return {
       nextUnit: {
